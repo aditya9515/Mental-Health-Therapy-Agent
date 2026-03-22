@@ -1,6 +1,44 @@
-def main():
-    print("Hello from mental-health-therapy-agent!")
+# setting up Fast API
+# print("Setting up Fast API...")
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+import uvicorn
+from ai_agent import agent, parse_response
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "https://mhafrontend.adityakosuru.online"],  # frontend
+    allow_methods=["*"],                      # allows OPTIONS
+    allow_headers=["*"]
+)
+# print("Fast API is set up.")
+
+# reciveing and validating user input
+
+
+class Query(BaseModel):
+    message: str
+
+
+@app.post("/ask")
+async def ask(request: Query):
+    # AI agent logic would go here
+    # response = ai_agent(query)
+
+    inputs = {"messages": [{"role": "user", "content": request.message}]}
+    stream = agent.invoke(inputs, stream_mode="updates")
+    tool_call_name, final_response = parse_response(stream)
+    return {
+        "response": final_response,
+        "tool_called": tool_call_name
+    }
+
+
+# hosting my api
 
 
 if __name__ == "__main__":
-    main()
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
