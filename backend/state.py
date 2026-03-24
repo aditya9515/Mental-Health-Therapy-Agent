@@ -5,31 +5,24 @@ from typing_extensions import TypedDict
 class State(TypedDict, total=False):
     # Identity
     session_id: str
-    user_id: Optional[str]
+    user_id: str
 
     # Conversation
-    history: List[Dict[str, str]]
-
-    # RAG
     query: str
-    retrieved_docs: List[str]
-    doc_metadata: List[Dict]
+    history: List[Dict]
+    
+    #fisrt layer
+    category: int
+    
+    # Safety
+    safety_response: Dict
+    
+    # emotion classification
+    emotions: List[str]
 
-    # Embeddings
-    query_embedding: Optional[List[float]]
-
-    # Agent execution
-    tool_calls: List[Dict]
-    intermediate_steps: List[str]
-
-    # Output
-    final_answer: str
-    confidence: Optional[float]
-
-    # Config
-    model_name: str
-    temperature: float
-    max_tokens: int
+    # Therapy
+    responce: Dict
+    temp_history: List[Dict]
 
     # Observability
     error: Optional[str]

@@ -4,7 +4,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
-from ai_agent import agent, parse_response
+from backend.intent_dedector.ai_agent import agent, parse_response
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()

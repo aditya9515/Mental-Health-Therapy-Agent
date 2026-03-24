@@ -10,11 +10,11 @@ TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
 EMERGENCY_CONTACT_NUMBER = os.getenv("EMERGENCY_CONTACT_NUMBER")
 DB_DIR = os.getenv("DB_LOCATION")
-EMBED_MODEL = "nomic-embed-text"
-LLM_MODEL = "alibayram/medgemma:4b"
+
 
 
 def emergency_call():
+    print("ADA error in emergency_call function")
     """
     Makes an emergency call using Twilio when the prompt indicates a crisis situation.
     """
