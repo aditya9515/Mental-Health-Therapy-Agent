@@ -35,7 +35,7 @@ def agent(state: State):
     if response["category"] == 1:
         return {"category": 1}
     else:
-        return {"category": 0, "final_answer": response["reply"]}
+        return {"category": 0, "responce": response["reply"]}
     
     
 def test(query: str):
@@ -67,6 +67,6 @@ def test(query: str):
 
 
 if __name__ == "__main__":
-    query = "i feel sad and lonely"
+    query = "hi who are you"
     result = test(query)
     print(result.content)

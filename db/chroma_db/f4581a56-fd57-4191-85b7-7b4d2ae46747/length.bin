@@ -1,5 +1,1 @@
-
-                Technique: Containing Worry
-                Goal: To manage and reduce worry by containing it to a specific time of the day, allowing for better control over one's thoughts and emotions.
-                Emotions: anxiety, overwhelm
-anaging weight, Improving overall health, Reducing risk factors for chronic diseases\nntaining a regular sleep schedule\nd perspectives.", expected i64
+invalid type: string "\n                Technique: Graded Exposure\n                Goal: To reduce the level of anxiety associated with feared situations by gradually facing them without avoidance.\n                Emotions: Anxiety, Fear\n                Use Cases: Avoiding situations due to high levels of anxiety or fear, Phobias and specific fears\nleep schedule\nd perspectives.", expected f64

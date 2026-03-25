@@ -1,5 +1,5 @@
 from backend.state import State
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph
 from backend.emotion_classification.emotion_classification import emotion_classification_agent
 from backend.final_model.ai_agent import responce_to_user, therapist
 from backend.fisrt_layer.agent import agent
@@ -52,7 +52,7 @@ def Agent_build():
         "safety_defy",
         route_safety,
         {
-            "emergency": END,  # terminate graph
+            "emergency": "responce_to_user",  # terminate graph
             "safe": "emotion_classification_agent",
         }
     )
@@ -65,7 +65,7 @@ def Agent_build():
     graph.add_edge("therapist", "responce_to_user")
     
     def therapy_route(state: State):
-        if state.get("temp_history")[-1].get("completion") == False:
+        if bool(state.get("temp_completion")) is False:
             return "depression_therapy"
         return "general_therapy"
     graph.add_conditional_edges("responce_to_user", therapy_route,
@@ -88,14 +88,17 @@ if __name__ == "__main__":
             "query": query,
             "history": [],
 
-            "category": "",
+            "category": 0,
 
             "safety_response": {},
+            "threat_level": "",
 
             "emotions": [],
 
 
             "responce": {},
+            "temp_context": "",
+            "temp_completion": True,
             "temp_history": [],
 
 

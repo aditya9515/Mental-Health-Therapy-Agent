@@ -16,12 +16,15 @@ class State(TypedDict, total=False):
     
     # Safety
     safety_response: Dict
+    threat_level: str
     
     # emotion classification
     emotions: List[str]
 
     # Therapy
     responce: Dict
+    temp_context: str
+    temp_completion: bool
     temp_history: List[Dict]
 
     # Observability

@@ -5,7 +5,7 @@ from backend.tools.rag import get_retriever
 
 # creating an ai agent with tools
 llm = ChatOllama(
-    model="alibayram/medgemma:4b",
+    model="qwen3:8b",
     format="json",
     temperature=0.5
 )
@@ -24,7 +24,7 @@ def therapist(state: State):
     else:
         context = state["temp_context"]
     prompt = f"""
-    HISTORY:
+    YOUR PAST CONVERSATION HISTORY:
     {history}
     
     USER INPUT:
@@ -64,7 +64,7 @@ def therapist(state: State):
             print("JSON decode error, retrying...")
             
     history.append({"User": query,
-                    "Agent": responce.get("final_answer"),
+                    "You": responce.get("final_answer"),
                     })
     
     return {"responce": responce.get("final_answer"), "temp_history": history, "temp_context": responce.get("technique"), "temp_completion": bool(responce.get("completion"))}
@@ -76,9 +76,13 @@ def responce_to_user(state: State):
     print(responce)
     query = input("Enter user query: ")
 
-    return {"responce": responce,
-            "query": query,
-            }
+    return {
+        "query": query,
+        "responce": responce,
+        "temp_history": state["temp_history"],
+        "temp_context": state["temp_context"],
+        "temp_completion": state["temp_completion"]
+    }
 
 
 def test(query: str,emotions: list):
@@ -115,6 +119,10 @@ def test(query: str,emotions: list):
     
         4. you try to gather more information about the user's situation and feelings to 
         provide better support. If needed
+        
+        5. try to compleate the user's request withing 5 intractions as much as possible.can exted upto 7 interactions if needed.
+        
+        6. you can ask the user questions but give more priority to solving the user's problem
 
         """
     responce = llm.invoke(prompt).content

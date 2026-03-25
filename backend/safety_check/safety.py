@@ -1,10 +1,10 @@
 from backend.state import State
 from langchain_ollama import ChatOllama
 import json
-from backend.tools import emergency_call
+from backend.tools.emergency_call import emergency_call
 
 
-llm = ChatOllama(model="qwen2.5:3b", format="json")
+llm = ChatOllama(model="qwen2.5:7b-instruct", format="json")
 
 
 def safety_check(state: State):
@@ -13,26 +13,27 @@ def safety_check(state: State):
     query = state["query"]
 
     prompt = f"""
+    You are a strict mental health safety classifier.
+
     Conversation:
     {history}
 
     New message:
     {query}
 
-    Task:
-    Classify risk level:
-    - HIGH (self-harm/suicide)- needs instent action
-    - MEDIUM (distress)
-    - LOW (safe)
+    Rules:
+    - If the user expresses ANY desire to die → HIGH
+    - Includes typos like "wnat to die"
+    - Includes indirect phrases like "life is not worth living"
+    - Emotional distress only → MEDIUM
+    - Otherwise → LOW
 
-    Also detect escalation (yes/no)
-
-    Return JSON:
-        {{
-        "risk": ["HIGH","MEDIUM","LOW"],
-        "escalation": true/false,
-        "confidence": 0 to 1
-        }}
+    Return ONLY valid JSON:
+    {{
+        "risk": "HIGH" or "MEDIUM" or "LOW",
+        "escalation": true or false,
+        "confidence": number between 0 and 1
+    }}
     """
     response = llm.invoke(prompt).content
     response = json.loads(response)
@@ -43,37 +44,37 @@ def safety_defy(state: State):
     print("ADA error in safety_defy function")
     response = state["safety_response"]
     threath = "LOW"
-    if response["risk"] == "HIGH" and response["confidence"] > 0.7:
+    if response["risk"] == "HIGH":
         emergency_call()
         threath = "HIGH"
     if threath == "HIGH":
         return {"threat_level": threath,
-                "final_answer": "making emergency call"}
-    else:
-        return {"threat_level": threath}
+                "responce": "making emergency call"}
+    output = {"threat_level": threath}
+    return output
 
 
 def test(query: str):
 
     prompt = f"""
+    You are a strict mental health safety classifier.
+
     New message:
     {query}
 
-    Task:
-    Classify risk level:
-    - HIGH (self-harm/suicide)- needs instent action
-    - MEDIUM (distress)
-    - LOW (safe)
+    Rules:
+    - If the user expresses ANY desire to die → HIGH
+    - Includes typos like "wnat to die"
+    - Includes indirect phrases like "life is not worth living"
+    - Emotional distress only → MEDIUM
+    - Otherwise → LOW
 
-    Also detect escalation (yes/no)
-
-    Return JSON:
-        Return JSON:
-        {{
-        "risk": ["HIGH","MEDIUM","LOW"],
-        "escalation": true/false,
-        "confidence": 0 to 1
-        }}
+    Return ONLY valid JSON:
+    {{
+        "risk": "HIGH" or "MEDIUM" or "LOW",
+        "escalation": true or false,
+        "confidence": number between 0 and 1
+    }}
     """
     response = llm.invoke(prompt).content
     response = json.loads(response)
@@ -89,6 +90,6 @@ def test(query: str):
 
 
 if __name__ == "__main__":
-    query = "i do have light head ache"
+    query = "i wnat to die"
     response = test(query)
     print(response)
