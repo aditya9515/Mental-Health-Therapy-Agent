@@ -8,7 +8,7 @@ llm = ChatOllama(model="qwen2.5:7b-instruct", format="json")
 
 
 def safety_check(state: State):
-    print("ADA error in safety function")
+    # print("ADA error in safety function")
     history = state["history"][-3:]
     query = state["query"]
 
